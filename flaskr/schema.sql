@@ -15,6 +15,6 @@ CREATE TABLE books (
   book_author TEXT NOT NULL,
   status TEXT NOT NULL DEFAULT 'Want to read', --Want to read / reading/ finished
   rating INTEGER CHECK (rating BETWEEN 1 and 5),
-  notes TEXT NOT NULL,
+  notes TEXT,
   FOREIGN KEY (user_id) REFERENCES user (id)
 );

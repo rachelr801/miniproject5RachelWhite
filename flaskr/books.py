@@ -10,91 +10,103 @@ from werkzeug.exceptions import abort
 from flaskr.auth import login_required
 from flaskr.db import get_db
 
-bp = Blueprint('blog', __name__)
+bp = Blueprint('books', __name__)
 
 @bp.route('/')
 def index():
     db = get_db()
-    posts = db.execute(
-        'SELECT p.id, title, body, created, author_id, username'
-        ' FROM books p JOIN user u ON p.author_id = u.id'
+    books = db.execute(
+        'SELECT p.id, title, book_author, created, user_id, status, rating, notes, username'
+        ' FROM books p JOIN user u ON p.user_id = u.id'
         ' ORDER BY created DESC'
     ).fetchall()
-    return render_template('blog/index.html', posts=posts)
+    return render_template('books/index.html', books=books)
 
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
     if request.method == 'POST':
         title = request.form['title']
-        body = request.form['body']
+        book_author = request.form['book_author']
+        status = request.form['status']
+        rating = request.form.get('rating') or None
+        notes = request.form['notes']
         error = None
 
         if not title:
             error = 'Title is required.'
+
+        if not book_author:
+            error = 'Book author is required.'
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                'INSERT INTO books (title, body, user_id)'
-                ' VALUES (?, ?, ?)',
-                (title, body, g.user['id'])
+                'INSERT INTO books (title, book_author, status, rating, notes, user_id)'
+                ' VALUES (?, ?, ?, ?, ?, ?)',
+                (title, book_author, status, rating, notes, g.user['id'])
             )
             db.commit()
-            return redirect(url_for('blog.index'))
+            return redirect(url_for('books.index'))
 
-    return render_template('blog/create.html')
+    return render_template('books/create.html')
 
-def get_post(id, check_author=True):
-    post = get_db().execute(
-        'SELECT p.id, title, body, created, author_id, username'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
+def get_books(id, check_user=True):
+    books = get_db().execute(
+        'SELECT p.id, title, book_author, created, user_id, status, rating, notes, username'
+        ' FROM books p JOIN user u ON p.user_id = u.id'
         ' WHERE p.id = ?',
         (id,)
     ).fetchone()
 
-    if post is None:
+    if books is None:
         abort(404, f"Post id {id} doesn't exist.")
 
-    if check_author and post['author_id'] != g.user['id']:
+    if check_user and books['user_id'] != g.user['id']:
         abort(403)
 
-    return post
+    return books
 
 @bp.route('/<int:id>/update', methods=('GET', 'POST'))
 @login_required
 def update(id):
-    post = get_post(id)
+    books = get_books(id)
 
     if request.method == 'POST':
         title = request.form['title']
-        body = request.form['body']
+        book_author = request.form['book_author']
+        status = request.form['status']
+        rating = request.form.get('rating') or None
+        notes = request.form['notes ']
         error = None
 
         if not title:
             error = 'Title is required.'
+
+        if not book_author:
+            error = 'Book author is required.'
 
         if error is not None:
             flash(error)
         else:
             db = get_db()
             db.execute(
-                'UPDATE post SET title = ?, body = ?'
+                'UPDATE books SET title = ?, book_author = ?, status = ?, rating = ?, notes = ?'
                 ' WHERE id = ?',
-                (title, body, id)
+                (title, book_author, status, rating, notes id)
             )
             db.commit()
-            return redirect(url_for('blog.index'))
+            return redirect(url_for('books.index'))
 
-    return render_template('blog/update.html', post=post)
+    return render_template('books/update.html', books=books)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
-    get_post(id)
+    get_books(id)
     db = get_db()
-    db.execute('DELETE FROM post WHERE id = ?', (id,))
+    db.execute('DELETE FROM books WHERE id = ?', (id,))
     db.commit()
-    return redirect(url_for('blog.index'))
+    return redirect(url_for('books.index'))

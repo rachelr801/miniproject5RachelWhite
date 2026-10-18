@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Edit "{{ book['title'] }}"{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+  <form method="post">
+    <label for="title">Title</label>
+    <input name="title" id="title"
+      value="{{ request.form['title'] or book['title'] }}" required>
+    
+    <label for="book_author">Book Author</label>
+    <input name="book_author" id="book_author" value="{{ request.form['book_author'] }}" required>
+
+    <label for="status">Status</label>
+    <select name="status" id="status">
+      <option>Want to read</option>
+      <option>Reading</option>
+      <option>Finished</option>
+    </select>
+
+    <label for="rating">Rating (1-5)</label>
+    <input type="number" name="rating" id="rating" min="1" max="5" value="{{request.form['rating']}}">
+
+    <label for="notes">Notes</label>
+    <textarea name="notes" id="notes">{{request.form['notes']}}</textarea>
+  </form>
+  <hr>
+  <form action="{{ url_for('books.delete', id=post['id']) }}" method="post">
+    <input class="danger" type="submit" value="Delete" onclick="return confirm('Are you sure?');">
+  </form>
+{% endblock %}
