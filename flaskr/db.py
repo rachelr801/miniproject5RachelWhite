@@ -1,6 +1,6 @@
 # INF601 - Advanced Programming in Python
 # Rachel White
-# Mini Project
+# Mini Project 5
 
 import sqlite3
 from datetime import datetime
