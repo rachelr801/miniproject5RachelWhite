@@ -79,7 +79,7 @@ def update(id):
         book_author = request.form['book_author']
         status = request.form['status']
         rating = request.form.get('rating') or None
-        notes = request.form['notes ']
+        notes = request.form['notes']
         error = None
 
         if not title:
@@ -95,12 +95,12 @@ def update(id):
             db.execute(
                 'UPDATE books SET title = ?, book_author = ?, status = ?, rating = ?, notes = ?'
                 ' WHERE id = ?',
-                (title, book_author, status, rating, notes id)
+                (title, book_author, status, rating, notes, id)
             )
             db.commit()
             return redirect(url_for('books.index'))
 
-    return render_template('books/update.html', books=books)
+    return render_template('books/update.html', book=books)
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
