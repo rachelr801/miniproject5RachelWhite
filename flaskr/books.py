@@ -36,7 +36,7 @@ def create():
         if not title:
             error = 'Title is required.'
 
-        if not book_author:
+        elif not book_author:
             error = 'Book author is required.'
 
         if error is not None:
@@ -62,7 +62,7 @@ def get_books(id, check_user=True):
     ).fetchone()
 
     if books is None:
-        abort(404, f"Post id {id} doesn't exist.")
+        abort(404, f"Book id {id} doesn't exist.")
 
     if check_user and books['user_id'] != g.user['id']:
         abort(403)
@@ -85,7 +85,7 @@ def update(id):
         if not title:
             error = 'Title is required.'
 
-        if not book_author:
+        elif not book_author:
             error = 'Book author is required.'
 
         if error is not None:
