@@ -1,5 +1,5 @@
+DROP TABLE IF EXISTS books;
 DROP TABLE IF EXISTS user;
-DROP TABLE IF EXISTS post;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -7,11 +7,14 @@ CREATE TABLE user (
   password TEXT NOT NULL
 );
 
-CREATE TABLE post (
+CREATE TABLE books (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  author_id INTEGER NOT NULL,
+  user_id INTEGER NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   title TEXT NOT NULL,
-  body TEXT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES user (id)
+  book_author TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'Want to read', --Want to read / reading/ finished
+  rating INTEGER CHECK (rating BETWEEN 1 and 5),
+  notes TEXT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES user (id)
 );
