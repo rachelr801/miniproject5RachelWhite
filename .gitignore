@@ -7,3 +7,6 @@ instance/
 node_modules/
 package.json
 package-lock.json
+
+# Editor / Claude Code settings
+.claude/
