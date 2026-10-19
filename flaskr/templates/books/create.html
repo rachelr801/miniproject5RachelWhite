@@ -5,26 +5,38 @@
 {% endblock %}
 
 {% block content %}
-  <form method="post">
-    <label for="title">Title</label>
-    <input name="title" id="title" value="{{ request.form['title'] }}" required>
-    
-    <label for="book_author">Book Author</label>
-    <input name="book_author" id="book_author" value="{{ request.form['book_author'] }}" required>
+  <form method="post" class="col-md-8">
+    <div class="mb-3">
+      <label for="title" class="form-label">Title</label>
+      <input name="title" id="title" class="form-control" value="{{ request.form['title'] }}" required>
+    </div>
 
-    <label for="status">Status</label>
-    <select name="status" id="status">
-      <option>Want to read</option>
-      <option>Reading</option>
-      <option>Finished</option>
-    </select>
+    <div class="mb-3">
+      <label for="book_author" class="form-label">Book Author</label>
+      <input name="book_author" id="book_author" class="form-control" value="{{ request.form['book_author'] }}" required>
+    </div>
 
-    <label for="rating">Rating (1-5)</label>
-    <input type="number" name="rating" id="rating" min="1" max="5" value="{{request.form['rating']}}">
+    <div class="row">
+      <div class="col-sm-6 mb-3">
+        <label for="status" class="form-label">Status</label>
+        <select name="status" id="status" class="form-select">
+          {% for s in ['Want to read', 'Reading', 'Finished'] %}
+            <option {% if request.form['status'] == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-sm-6 mb-3">
+        <label for="rating" class="form-label">Rating (1-5)</label>
+        <input type="number" name="rating" id="rating" class="form-control" min="1" max="5" value="{{ request.form['rating'] }}">
+      </div>
+    </div>
 
-    <label for="notes">Notes</label>
-    <textarea name="notes" id="notes">{{request.form['notes']}}</textarea>
-    
-    <input type="submit" value="Save">
+    <div class="mb-3">
+      <label for="notes" class="form-label">Notes</label>
+      <textarea name="notes" id="notes" class="form-control" rows="6">{{ request.form['notes'] }}</textarea>
+    </div>
+
+    <input type="submit" value="Save" class="btn btn-primary">
+    <a href="{{ url_for('books.index') }}" class="btn btn-outline-secondary">Cancel</a>
   </form>
 {% endblock %}

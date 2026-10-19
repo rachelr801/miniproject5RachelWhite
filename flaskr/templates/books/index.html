@@ -1,29 +1,34 @@
 {% extends 'base.html' %}
 
 {% block header %}
-  <h1>{% block title %}Books{% endblock %}</h1>
+  <h1 class="mb-0">{% block title %}Books{% endblock %}</h1>
   {% if g.user %}
-    <a class="action" href="{{ url_for('books.create') }}">New</a>
+    <a class="btn btn-primary" href="{{ url_for('books.create') }}">+ Add Book</a>
   {% endif %}
 {% endblock %}
 
 {% block content %}
   {% for book in books %}
-    <article class="post">
-      <header>
-        <div>
-          <h1>{{ book['title'] }}</h1>
-          <div class="about">added by {{ book['username'] }} on {{ book['created'].strftime('%Y-%m-%d') }}</div>
+    <div class="card mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start">
+          <div>
+            <h2 class="card-title h4 mb-1">{{ book['title'] }}</h2>
+            <h3 class="card-subtitle h6 text-muted mb-2">by {{ book['book_author'] }}</h3>
+          </div>
+          {% if g.user['id'] == book['user_id'] %}
+            <a class="btn btn-sm btn-outline-secondary" href="{{ url_for('books.update', id=book['id']) }}">Edit</a>
+          {% endif %}
         </div>
-        {% if g.user['id'] == book['user_id'] %}
-          <a class="action" href="{{ url_for('books.update', id=book['id']) }}">Edit</a>
-        {% endif %}
-      </header>
-      <div class="about">by {{ book['book_author'] }} · {{ book['status'] }}{% if book['rating'] %} · {{ book['rating'] }}/5{% endif %}</div>
-      <p class="body">{{ book['notes'] }}</p>
-    </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
+        <p class="mb-2">
+          <span class="badge {% if book['status'] == 'Finished' %}text-bg-success{% elif book['status'] == 'Reading' %}text-bg-primary{% else %}text-bg-secondary{% endif %}">{{ book['status'] }}</span>
+          {% if book['rating'] %}<span class="badge text-bg-warning">{{ book['rating'] }}/5</span>{% endif %}
+        </p>
+        {% if book['notes'] %}<p class="card-text book-notes">{{ book['notes'] }}</p>{% endif %}
+        <p class="card-text"><small class="text-muted">added by {{ book['username'] }} on {{ book['created'].strftime('%Y-%m-%d') }}</small></p>
+      </div>
+    </div>
+  {% else %}
+    <p class="text-muted">No books yet.</p>
   {% endfor %}
 {% endblock %}
