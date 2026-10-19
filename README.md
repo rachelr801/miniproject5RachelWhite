@@ -84,7 +84,7 @@ Rachel White
  
 ## License
  
- see the LICENSE.md file for details
+This project was created as coursework for INF601 and is not licensed for reuse
  
 ## Acknowledgments
 
