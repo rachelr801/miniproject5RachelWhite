@@ -2,3 +2,8 @@ __pycache__/
 *.pyc
 .venv/
 instance/
+
+# Node files (Bootstrap is loaded from the CDN)
+node_modules/
+package.json
+package-lock.json
